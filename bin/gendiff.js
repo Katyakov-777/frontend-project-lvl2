@@ -2,6 +2,7 @@
 import commander from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
+import _ from 'lodash';
 
 const readFile = (pathToFile) => {
         try{
@@ -20,17 +21,8 @@ const convertToJson = (filepath) => {
                 return undefined; 
         }
 }
-commander.
-description('Compares two configuration files and shows a difference.').
-version('0.1').
-option('-f, --format [type]', 'output format', 'json').
-arguments('<filepath1> <filepath2>').action(genDiff);
     
-
-
-
-
-  const genDiff = (filepath1, filepath2, options) => {
+const genDiff = (filepath1, filepath2) => {
         
         if(!readFile(filepath1) || !readFile(filepath2) ) {
                 return;
@@ -42,8 +34,8 @@ arguments('<filepath1> <filepath2>').action(genDiff);
         return;
       }
         // get Keys of obj1 and obj2
-      const keyListObj1 // = ke; 
-      const keyListObj2;
+      const keyListObj1 = Object.keys(object1);
+      const keyListObj2 = Object.keys(object2);
 
         //Deleted Fields
         const deletedKeys = keyListObj1.filter((key)=>{
@@ -56,34 +48,38 @@ arguments('<filepath1> <filepath2>').action(genDiff);
         //Changed Fields
         const changedKeys = keyListObj1.filter((key)=>{
                 if(keyListObj2.includes(key)){
-                       return object1[key] !== object1[key] 
+                       return object1[key] !== object2[key] 
                 }
         })
-       
-        const allKeysSorted
-        const messages = allKeysSordet.map((key) => {
+        
+        
+        const allKeysUniqSorted = _.uniq(keyListObj1.concat(keyListObj2)).sort();
+
+        const messages = allKeysUniqSorted.map((key) => {
                 if(deletedKeys.includes(key)){
-                        return '- ' + key + ': ' +  keyListObj1[key];
+                        console.log()
+                        return '- ' + key + ': ' +  object1[key];
                 }
 
                 if(addedKeys.includes(key)){
-                        return '+ ' + key + ': ' +  keyListObj2[key];
+                        return '+ ' + key + ': ' +  object2[key];
                 }
 
                 if(changedKeys.includes(key)){
-                        const str =  '- ' + key + ': ' +  keyListObj1[key] +'\n';
-                        str +=  '+ ' + key + ': ' +  keyListObj2[key] 
+                        const str1 =  '- ' + key + ': ' +  object1[key];
+                        const str2 = '+ ' + key + ': ' +  object2[key];
+                        return [str1, str2]; 
                 }
+                return key + ': ' +  object1[key];
         })
 
-
-
-
-      console.log(object1);
-      console.log("aaaaaa");
-      console.log(object2.type);
+ console.log(messages.flat().join('\n'));
   }
-
+commander.
+description('Compares two configuration files and shows a difference.').
+version('0.1').
+option('-f, --format [type]', 'output format', 'json').
+arguments('<filepath1> <filepath2>').action(genDiff);
 commander.parse(process.argv)
 
 

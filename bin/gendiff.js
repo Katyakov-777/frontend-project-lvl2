@@ -45,13 +45,13 @@ const genDiff = (filepath1, filepath2) => {
     if (keyListObj2.includes(key)) {
       return object1[key] !== object2[key];
     }
+    return false;
   });
 
   const allKeysUniqSorted = _.uniq(keyListObj1.concat(keyListObj2)).sort();
 
   const messages = allKeysUniqSorted.map((key) => {
     if (deletedKeys.includes(key)) {
-      console.log();
       return `- ${key}: ${object1[key]}`;
     }
 

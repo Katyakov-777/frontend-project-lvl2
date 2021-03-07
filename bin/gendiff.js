@@ -64,10 +64,14 @@ const genDiff = (filepath1, filepath2) => {
       const str2 = `+ ${key}: ${object2[key]}`;
       return [str1, str2];
     }
-    return `${key}: ${object1[key]}`;
+    return `  ${key}: ${object1[key]}`;
   });
 
-  console.log(messages.flat().join('\n'));
+  const str = (`{
+  ${messages.flat().join('\n  ')}
+}`);
+  console.log(str);
+  return str;
 };
 commander
   .description('Compares two configuration files and shows a difference.')

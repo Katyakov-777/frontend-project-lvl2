@@ -5,7 +5,7 @@
   "description": "[![Actions Status](https://github.com/Katyakov-777/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Katyakov-777/frontend-project-lvl2/actions)",
   "main": "bin/gendiff.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "eslint": "^7.21.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3"
   }
 }

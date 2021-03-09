@@ -1,35 +1,10 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import _ from 'lodash';
-
-const readFile = (pathToFile) => {
-  try {
-    return fs.readFileSync(path.resolve(process.cwd(), pathToFile), { encoding: 'UTF-8' });
-  } catch (e) {
-    console.log(`${pathToFile} is wrong. No file was found`);
-    return undefined;
-  }
-};
-
-const convertToJson = (filepath) => {
-  try {
-    return JSON.parse(readFile(filepath));
-  } catch (e) {
-    console.log(`${filepath} file has wrong format`);
-    return undefined;
-  }
-};
+import parsing from './parsing.js';
 
 const genDiff = (filepath1, filepath2) => {
-  if (!readFile(filepath1) || !readFile(filepath2)) {
-    return;
-  }
-  const object1 = convertToJson(filepath1);
-  const object2 = convertToJson(filepath2);
+  const object1 = parsing(filepath1);
+  const object2 = parsing(filepath2);
 
-  if (!object1 || !object2) {
-    return;
-  }
   // get Keys of obj1 and obj2
   const keyListObj1 = Object.keys(object1);
   const keyListObj2 = Object.keys(object2);

@@ -10,13 +10,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
-
-const pathTofile1Name = getFixturePath('test1.json');
-const pathTofile2Name = getFixturePath('test2.json');
 const fileWithResultName = 'expected_file.txt';
 
 // eslint-disable-next-line no-undef
-test('genDiff', () => {
+test('genDiff-json', () => {
   // eslint-disable-next-line no-undef
-  expect(genDiff(pathTofile1Name, pathTofile2Name)).toBe(readFile(fileWithResultName));
+  expect(genDiff(getFixturePath('test1.json'), getFixturePath('test2.json'))).toBe(readFile(fileWithResultName));
+});
+
+// eslint-disable-next-line no-undef
+test('genDiff-yaml', () => {
+  // eslint-disable-next-line no-undef
+  expect(genDiff(getFixturePath('test3.yml'), getFixturePath('test4.yml'))).toBe(readFile(fileWithResultName));
 });

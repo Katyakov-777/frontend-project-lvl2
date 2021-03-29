@@ -45,12 +45,12 @@ const stylish = (diff, space = 2) => {
       case 'unchanged':
         return `${indentObject}${name}: ${stringify(currentValue, space)}`;
       default:
-        throw new Error(`Error`);
+        throw new Error('Error');
     }
   };
- 
+
   const renderedDiff = diff.map((node) => processNode(node)).join('\n');
-  //const renderedDiff = diff.map((node) => console.log(node));
+  // const renderedDiff = diff.map((node) => console.log(node));
   return renderedDiff;
 };
 
@@ -66,11 +66,10 @@ const genDiff = (object1, object2) => {
   // Changed Fields
   const changedKeys = keyListObj1.filter((key) => {
     if (keyListObj2.includes(key)) {
-        if(_.isObject(object1[key]) && _.isObject(object2[key])){
-          return false;
-        } else{
-          return object1[key] !== object2[key];
-        }
+      if (_.isObject(object1[key]) && _.isObject(object2[key])) {
+        return false;
+      }
+      return object1[key] !== object2[key];
     }
     return false;
   });
@@ -119,4 +118,4 @@ const genDiff = (object1, object2) => {
   return diffTree;
 };
 
-export {genDiff, stylish};
+export { genDiff, stylish };

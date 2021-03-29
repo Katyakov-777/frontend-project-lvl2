@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import genDiff from '../src/gendiff-logic.js';
+import parsing from '../src/parsing.js';
+import showChanges from '../src/index.js';
 
 commander
   .description('Compares two configuration files and shows a difference.')
@@ -9,8 +10,9 @@ commander
   .arguments('<filepath1> <filepath2>')
   .action((filepath1, filepath2) => {
     try {
-      const message = genDiff(filepath1, filepath2);
-      console.log(message);
+      const object1 = parsing(filepath1);
+      const object2 = parsing(filepath2);
+      console.log(showChanges(object1, object2));
     } catch (error) {
       console.log(error.toString());
     }

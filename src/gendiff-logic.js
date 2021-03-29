@@ -1,10 +1,60 @@
 import _ from 'lodash';
-import parsing from './parsing.js';
 
-const genDiff = (filepath1, filepath2) => {
-  const object1 = parsing(filepath1);
-  const object2 = parsing(filepath2);
+const stringify = (value, space) => {
+  if (_.isBoolean(value) || _.isNull(value)
+  || _.isString(value) || _.isNumber(value)) {
+    return value;
+  }
 
+  const indent = ' '.repeat(space + 6);
+  const indentObject = ' '.repeat(space + 2);
+
+  const keys = Object.keys(value);
+  const values = keys.map((name) => {
+    const valueKey = value[name];
+
+    if (typeof valueKey === 'object') {
+      return `${indent}${name}: ${stringify(valueKey, space + 4)}\n`;
+    }
+    return `${indent}${name}: ${valueKey}\n`;
+  });
+  return `{\n${values.join('')}${indentObject}}`;
+};
+
+const stylish = (diff, space = 2) => {
+  const indent = ' '.repeat(space);
+  const indentObject = ' '.repeat(space + 2);
+  const processNode = (node) => {
+    const {
+      name,
+      type,
+      children,
+      currentValue,
+      previousValue,
+    } = node;
+
+    switch (type) {
+      case 'nested':
+        return `${indentObject}${name}: {\n${stylish(children, space + 4)}\n${indentObject}}`;
+      case 'added':
+        return `${indent}+ ${name}: ${stringify(currentValue, space)}`;
+      case 'deleted':
+        return `${indent}- ${name}: ${stringify(currentValue, space)}`;
+      case 'changed':
+        return `${indent}- ${name}: ${stringify(previousValue, space)}\n${indent}+ ${name}: ${stringify(currentValue, space)}`;
+      case 'unchanged':
+        return `${indentObject}${name}: ${stringify(currentValue, space)}`;
+      default:
+        throw new Error(`Error`);
+    }
+  };
+ 
+  const renderedDiff = diff.map((node) => processNode(node)).join('\n');
+  //const renderedDiff = diff.map((node) => console.log(node));
+  return renderedDiff;
+};
+
+const genDiff = (object1, object2) => {
   // get Keys of obj1 and obj2
   const keyListObj1 = Object.keys(object1);
   const keyListObj2 = Object.keys(object2);
@@ -16,34 +66,57 @@ const genDiff = (filepath1, filepath2) => {
   // Changed Fields
   const changedKeys = keyListObj1.filter((key) => {
     if (keyListObj2.includes(key)) {
-      return object1[key] !== object2[key];
+        if(_.isObject(object1[key]) && _.isObject(object2[key])){
+          return false;
+        } else{
+          return object1[key] !== object2[key];
+        }
     }
     return false;
   });
 
   const allKeysUniqSorted = _.uniq(keyListObj1.concat(keyListObj2)).sort();
 
-  const messages = allKeysUniqSorted.map((key) => {
+  const diffTree = allKeysUniqSorted.map((key) => {
     if (deletedKeys.includes(key)) {
-      return `  - ${key}: ${object1[key]}`;
+      return {
+        type: 'deleted',
+        name: key,
+        currentValue: object1[key],
+      };
     }
 
     if (addedKeys.includes(key)) {
-      return `  + ${key}: ${object2[key]}`;
+      return {
+        type: 'added',
+        name: key,
+        currentValue: object2[key],
+      };
     }
 
     if (changedKeys.includes(key)) {
-      const str1 = `  - ${key}: ${object1[key]}`;
-      const str2 = `  + ${key}: ${object2[key]}`;
-      return [str1, str2];
+      return {
+        type: 'changed',
+        name: key,
+        currentValue: object2[key],
+        previousValue: object1[key],
+      };
     }
-    return `    ${key}: ${object1[key]}`;
-  });
 
-  // eslint-disable-next-line consistent-return
-  return (`{
-  ${messages.flat().join('\n  ')}
-}`);
+    if (_.isObject(object1[key]) && _.isObject(object2[key])) {
+      return {
+        type: 'nested',
+        name: key,
+        children: genDiff(object1[key], object2[key]),
+      };
+    }
+    return {
+      type: 'unchanged',
+      name: key,
+      currentValue: object1[key],
+    };
+  });
+  return diffTree;
 };
 
-export default genDiff;
+export {genDiff, stylish};

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import commander from 'commander';
+import program from 'commander';
 import genDiff from '../index.js';
 
-commander
+program
   .description('Compares two configuration files and shows a difference.')
   .version('0.1')
   .option('-f, --format [type]', 'output format', 'stylish')
@@ -15,4 +15,4 @@ commander
     }
   });
 
-commander.parse(process.argv);
+program.parse(process.argv);

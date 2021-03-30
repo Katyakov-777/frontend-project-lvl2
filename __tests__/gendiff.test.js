@@ -46,7 +46,7 @@ test('genDiff-yaml', () => {
   // eslint-disable-next-line no-undef
   expect(isJsonParsable(genDiff(path1Yaml, path2Yaml, 'json'))).toBe(true);
 });
-
+// eslint-disable-next-line no-undef
 test('genDiff-yaml-hexlet', () => {
   const path1Yaml = getFixturePath('file1.yml');
   const path2Yaml = getFixturePath('file2.yml');

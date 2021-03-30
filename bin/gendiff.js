@@ -13,5 +13,5 @@ commander
     } catch (error) {
       console.log(error.toString());
     }
-  });
-commander.parse(process.argv);
+  })
+  .parse(process.argv);

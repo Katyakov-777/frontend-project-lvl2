@@ -52,6 +52,6 @@ const convertToStylish = (diff, space = 2) => {
   return renderedDiff;
 };
 
-const stylish = (diff) => `{\n${convertToStylish(diff)}\n}\n`;
+const stylish = (diff) => `{\n${convertToStylish(diff)}\n}`;
 
 export default stylish;

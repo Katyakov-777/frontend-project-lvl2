@@ -2,7 +2,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as fs from 'fs';
 import * as path from 'path';
-import genDiff from '../src/gendiff-logic.js';
+import genDiff from '../src/gendiff.js';
 
 const isJsonParsable = (string) => {
   try {

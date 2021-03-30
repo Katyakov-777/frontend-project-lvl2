@@ -33,7 +33,7 @@ const findDifference = (object1, object2) => {
   // Changed Fields
   const changedKeys = identifyChangedKeys(object1, object2);
 
-  const allKeysUniqSorted = _.uniq(keyListObj1.concat(keyListObj2)).sort();
+  const allKeysUniqSorted = _.sortBy(_.uniq(keyListObj1.concat(keyListObj2)));
 
   const diffTree = allKeysUniqSorted.map((key) => {
     if (deletedKeys.includes(key)) {
